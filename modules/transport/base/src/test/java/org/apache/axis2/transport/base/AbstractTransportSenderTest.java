@@ -114,7 +114,6 @@ public class AbstractTransportSenderTest extends TestCase {
         axisOperation.setMessageExchangePattern("http://www.w3.org/ns/wsdl/in-out");
         OperationContext operationContext = new OperationContext(axisOperation, serviceContext);
         messageContext.setOperationContext(operationContext);
-        //messageContext.getOperationContext().getAxisOperation().setMessageExchangePattern("http://www.w3.org/ns/wsdl/out-in");
         assertTrue(abstractTransportSender.waitForSynchronousResponse(messageContext));
     }
 }
