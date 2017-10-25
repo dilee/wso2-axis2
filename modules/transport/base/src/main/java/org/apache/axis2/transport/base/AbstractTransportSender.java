@@ -207,14 +207,17 @@ public abstract class AbstractTransportSender extends AbstractHandler implements
 
     /**
      * Should the transport sender wait for a synchronous response to be received?
+     *
      * @param msgCtx the outgoing message context
      * @return true if a sync response is expected
      */
     protected boolean waitForSynchronousResponse(MessageContext msgCtx) {
-        return
-            msgCtx.getOperationContext() != null &&
-            WSDL2Constants.MEP_URI_OUT_IN.equals(
-                msgCtx.getOperationContext().getAxisOperation().getMessageExchangePattern());
+        return msgCtx.getOperationContext() != null && (
+                "http://www.w3.org/ns/wsdl/out-in".equals(
+                        msgCtx.getOperationContext().getAxisOperation().getMessageExchangePattern()) ||
+                        "http://www.w3.org/ns/wsdl/in-out".equals(
+                                msgCtx.getOperationContext().getAxisOperation().getMessageExchangePattern()
+                        ));
     }
 
     public String getTransportName() {
