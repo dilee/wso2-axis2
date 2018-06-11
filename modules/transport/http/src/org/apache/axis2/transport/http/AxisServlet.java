@@ -712,7 +712,7 @@ public class AxisServlet extends HttpServlet {
         msgContext.setProperty(HTTPConstants.MC_HTTP_SERVLETREQUEST, request);
         msgContext.setProperty(HTTPConstants.MC_HTTP_SERVLETRESPONSE, response);
         try {
-            ServletContext context = getServletContext();
+            ServletContext context = this.servletConfig.getServletContext();
             if(context != null) {
                 msgContext.setProperty(HTTPConstants.MC_HTTP_SERVLETCONTEXT, context);
             }
