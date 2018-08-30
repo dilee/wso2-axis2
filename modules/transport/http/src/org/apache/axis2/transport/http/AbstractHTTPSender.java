@@ -30,9 +30,7 @@ import org.apache.axis2.context.ConfigurationContext;
 import org.apache.axis2.description.TransportOutDescription;
 import org.apache.axis2.i18n.Messages;
 import org.apache.axis2.transport.MessageFormatter;
-import org.apache.axis2.transport.TransportUtils;
 import org.apache.axis2.transport.http.util.HTTPProxyConfigurationUtil;
-import org.apache.axis2.util.JavaUtils;
 import org.apache.axis2.util.MessageProcessorSelector;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.commons.httpclient.Credentials;
@@ -53,12 +51,11 @@ import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthPolicy;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.params.HttpMethodParams;
-import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
-import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpHeaders;
 import org.apache.http.protocol.HTTP;
 
 import javax.xml.namespace.QName;
@@ -67,8 +64,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.zip.GZIPInputStream;
 
 public abstract class AbstractHTTPSender {
@@ -580,6 +575,19 @@ public abstract class AbstractHTTPSender {
         }
     }
 
+    /**
+     * Sets keep-alive configuration.
+     *
+     * @param msgContext the axis2 message context
+     * @param httpMethod the http method
+     */
+    protected void setKeepAlive(MessageContext msgContext, HttpMethod httpMethod) {
+        String disableKeepalive = (String) msgContext.getProperty(HTTPConstants.NO_KEEPALIVE);
+        if (disableKeepalive != null && Boolean.parseBoolean(disableKeepalive)) {
+            httpMethod.setRequestHeader(HttpHeaders.CONNECTION, HTTP.CONN_CLOSE);
+        }
+    }
+
     public void setFormat(OMOutputFormat format) {
         this.format = format;
     }
@@ -678,6 +686,7 @@ public abstract class AbstractHTTPSender {
         HttpState httpState = (HttpState)msgContext.getProperty(HTTPConstants.CACHED_HTTP_STATE);
 
         setTimeouts(msgContext, method);
+        setKeepAlive(msgContext, method);
 
         httpClient.executeMethod(config, method, httpState);
     }
