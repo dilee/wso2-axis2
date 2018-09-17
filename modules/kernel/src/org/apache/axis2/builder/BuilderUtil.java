@@ -219,8 +219,9 @@ public class BuilderUtil {
             DataHandler dataHandler = (DataHandler)parameter;
             OMText dataText = bodyFirstChild.getOMFactory().createOMText(
                     dataHandler, true);
-            soapFactory.createOMElement(key, ns, bodyFirstChild).addChild(
-                    dataText);
+            OMElement omElement = soapFactory.createOMElement(key, ns, bodyFirstChild);
+            omElement.addChild(dataText);
+            omElement.addAttribute("filename", ((DataHandler) parameter).getDataSource().getName(), ns);
         } else {
             String textValue = parameter.toString();
             soapFactory.createOMElement(key, ns, bodyFirstChild).setText(
