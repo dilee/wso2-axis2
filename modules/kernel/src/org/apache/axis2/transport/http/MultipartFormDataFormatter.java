@@ -259,6 +259,15 @@ public class MultipartFormDataFormatter implements MessageFormatter {
                                                                    Base64.decodeBase64(ele.getText().getBytes())),
                                            contentType,
                                            charset));
+                } else if ((ele.getAttribute(FILENAME_ATTRIBUTE_QNAME) != null)) {
+                    String fieldName = getAttributeValue(ele.getAttribute(FILE_FIELD_NAME_ATTRIBUTE_QNAME),
+                                                         DEFAULT_FILE_FIELD_NAME);
+                    String filename = getAttributeValue(ele.getAttribute(FILENAME_ATTRIBUTE_QNAME), DEFAULT_FILE_NAME);
+                    String contentType = getAttributeValue(ele.getAttribute(CONTENT_TYPE_ATTRIBUTE_QNAME),
+                                                           DEFAULT_CONTENT_TYPE);
+                    String charset = getAttributeValue(ele.getAttribute(CHARSET_ATTRIBUTE_QNAME), DEFAULT_CHARSET);
+                    parts.add(new FilePart(fieldName, new ByteArrayPartSource(filename, ele.getText().getBytes()),
+                                           contentType, charset));
                 } else {
                     parts.add(new StringPart(ele.getQName().getLocalPart(), ele.getText()));
                 }
