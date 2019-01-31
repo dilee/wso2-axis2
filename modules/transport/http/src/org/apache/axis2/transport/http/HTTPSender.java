@@ -97,8 +97,11 @@ public class HTTPSender extends AbstractHTTPSender {
         String soapAction =
                 messageFormatter.formatSOAPAction(msgContext, format, soapActiionString);
 
-        boolean redirectVal = (boolean) msgContext.getProperty("FOLLOW_REDIRECT");
-        getMethod.setFollowRedirects(redirectVal);
+        Object followRedirect = msgContext.getProperty("FOLLOW_REDIRECT");
+        if (followRedirect != null) {
+            getMethod.setFollowRedirects(Boolean.parseBoolean(followRedirect.toString()));
+
+        }
 
         if (soapAction != null && !msgContext.isDoingREST()) {
             getMethod.setRequestHeader(HTTPConstants.HEADER_SOAP_ACTION, soapAction);
