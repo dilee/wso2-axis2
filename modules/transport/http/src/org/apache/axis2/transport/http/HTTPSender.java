@@ -27,6 +27,7 @@ import org.apache.axis2.context.OperationContext;
 import org.apache.axis2.i18n.Messages;
 import org.apache.axis2.transport.MessageFormatter;
 import org.apache.axis2.wsdl.WSDLConstants;
+import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
@@ -98,9 +99,14 @@ public class HTTPSender extends AbstractHTTPSender {
                 messageFormatter.formatSOAPAction(msgContext, format, soapActiionString);
 
         Object followRedirect = msgContext.getProperty("FOLLOW_REDIRECT");
+        Object cookieStatus = msgContext.getProperty("DISABLE_COOKIE");
+
         if (followRedirect != null) {
             getMethod.setFollowRedirects(Boolean.parseBoolean(followRedirect.toString()));
+        }
 
+        if (cookieStatus != null && (Boolean.parseBoolean(cookieStatus.toString()))) {
+            getMethod.getParams().setCookiePolicy(CookiePolicy.IGNORE_COOKIES);
         }
 
         if (soapAction != null && !msgContext.isDoingREST()) {
