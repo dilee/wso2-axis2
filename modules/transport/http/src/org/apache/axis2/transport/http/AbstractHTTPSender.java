@@ -34,6 +34,7 @@ import org.apache.axis2.transport.http.util.HTTPProxyConfigurationUtil;
 import org.apache.axis2.util.MessageProcessorSelector;
 import org.apache.axis2.wsdl.WSDLConstants;
 import org.apache.commons.httpclient.Credentials;
+import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HeaderElement;
 import org.apache.commons.httpclient.HostConfiguration;
@@ -603,6 +604,8 @@ public abstract class AbstractHTTPSender {
         }
 
         if (httpClient != null) {
+            httpClient.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+                    new DefaultHttpMethodRetryHandler(0, false));
             return httpClient;
         }
 
@@ -615,6 +618,8 @@ public abstract class AbstractHTTPSender {
             }
 
             if (httpClient != null) {
+                httpClient.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+                        new DefaultHttpMethodRetryHandler(0, false));
                 return httpClient;
             }
 
@@ -651,6 +656,8 @@ public abstract class AbstractHTTPSender {
             // Get the timeout values set in the runtime
             initializeTimeouts(msgContext, httpClient);
 
+            httpClient.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+                    new DefaultHttpMethodRetryHandler(0, false));
             return httpClient;
         }
     }
